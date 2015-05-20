@@ -43,6 +43,7 @@ RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 \
 # Install AWS command.
 RUN pip install awscli
 
+# Add ninelet user.
 RUN useradd \
         --home-dir=/home/ninelet \
         --create-home \
@@ -54,8 +55,19 @@ RUN mkdir -p /home/ninelet/.ssh
 RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrHaL3kdZ2RekCdpkie3fsiv2yVyyWRBOO6Q68Kr+tFStRqtF8q1/UoeteUIOxzwKaAmHoaM9PkItdMBki0BLQDimCZwjjbkosritGDMTJXGd21O72mWaTv+nfq+/ishCdt6gdBYXTejvpPJhq8ZMYhTYJZkWqlGO2CKrWcnHHu1HhnValeqNWS5nh8BULOTMKaixjdzXIkWgm8HyiewvqjZXC3tZlfFDErRpiS7SYfJHd4PujjFCNyiVxZ5yOvEGMXQa1UFxQlfX8H+lAr6qObK50osAdUbvjjbhIhMvZT2higSNNtv/yiaLRnLbbOHomObvqxob5TUVdCkazXX3N imos@docker' > /home/ninelet/.ssh/authorized_keys
 RUN echo 'ninelet ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ninelet
 
+# Set language settings.
+RUN echo 'LANGUAGE=en_US.UTF8' >> /etc/environment
+RUN echo 'LANG=en_US.UTF8' >> /etc/environment
+RUN echo 'LC_ALL=en_US.UTF8' >> /etc/environment
+
+# Set a ninecluster role.
+RUN echo 'NINECLUSTER=ninelet' >> /etc/environment
+
+# Set up imos/bin.
 RUN grep '/usr/local/imos/bin:' /etc/environment || \
     sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
+RUN mkdir -p /usr/local/imos/bin
+RUN git clone 'https://github.com/imos/bin' /usr/local/imos/bin
 
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D", "-o", "ClientAliveInterval 5", "-o", "ClientAliveCountMax 3"]
