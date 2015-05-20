@@ -57,7 +57,5 @@ RUN echo 'ninelet ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ninelet
 RUN grep '/usr/local/imos/bin:' /etc/environment || \
     sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
 
-RUN echo "grep /usr/local/imos/bin: /etc/environment || sed 's%PATH=\"%PATH=\"/usr/local/imos/bin:%' /etc/environment" >/etc/profile.d/Z00-imos-bin.sh
-
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D", "-o", "ClientAliveInterval 5", "-o", "ClientAliveCountMax 3"]
