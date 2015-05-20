@@ -66,6 +66,8 @@ RUN echo 'NINECLUSTER=ninelet' >> /etc/environment
 # Set up imos/bin.
 RUN grep '/usr/local/imos/bin:' /etc/environment || \
     sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
+ENV PATH /usr/local/imos/bin:$PATH
+RUN echo "Defaults secure_path = \"$PATH\"" >/etc/sudoers.d/00-secure_path
 RUN mkdir -p /usr/local/imos/bin
 RUN git clone --depth 1 'https://github.com/imos/bin' /usr/local/imos/bin
 
