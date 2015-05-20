@@ -17,15 +17,15 @@ RUN apt-get update -qq & \
 RUN mkdir /var/run/sshd
 
 RUN useradd \
-        --home-dir=/home/cloud-admin \
+        --home-dir=/home/ninemaster \
         --create-home \
         --uid=20601 \
         --user-group \
         --shell=/bin/bash \
-        cloud-admin
-RUN mkdir -p /home/cloud-admin/.ssh
-RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrHaL3kdZ2RekCdpkie3fsiv2yVyyWRBOO6Q68Kr+tFStRqtF8q1/UoeteUIOxzwKaAmHoaM9PkItdMBki0BLQDimCZwjjbkosritGDMTJXGd21O72mWaTv+nfq+/ishCdt6gdBYXTejvpPJhq8ZMYhTYJZkWqlGO2CKrWcnHHu1HhnValeqNWS5nh8BULOTMKaixjdzXIkWgm8HyiewvqjZXC3tZlfFDErRpiS7SYfJHd4PujjFCNyiVxZ5yOvEGMXQa1UFxQlfX8H+lAr6qObK50osAdUbvjjbhIhMvZT2higSNNtv/yiaLRnLbbOHomObvqxob5TUVdCkazXX3N imos@docker' > /home/cloud-admin/.ssh/authorized_keys
-RUN echo 'cloud-admin ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/cloud-admin
+        ninemaster
+RUN mkdir -p /home/ninemaster/.ssh
+RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrHaL3kdZ2RekCdpkie3fsiv2yVyyWRBOO6Q68Kr+tFStRqtF8q1/UoeteUIOxzwKaAmHoaM9PkItdMBki0BLQDimCZwjjbkosritGDMTJXGd21O72mWaTv+nfq+/ishCdt6gdBYXTejvpPJhq8ZMYhTYJZkWqlGO2CKrWcnHHu1HhnValeqNWS5nh8BULOTMKaixjdzXIkWgm8HyiewvqjZXC3tZlfFDErRpiS7SYfJHd4PujjFCNyiVxZ5yOvEGMXQa1UFxQlfX8H+lAr6qObK50osAdUbvjjbhIhMvZT2higSNNtv/yiaLRnLbbOHomObvqxob5TUVdCkazXX3N imos@docker' > /home/ninemaster/.ssh/authorized_keys
+RUN echo 'ninemaster ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ninemaster
 
 # Install Ninelet.
 ADD ./ninelet /usr/local/ninelet

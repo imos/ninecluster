@@ -1,9 +1,46 @@
 FROM ubuntu:14.04
 MAINTAINER imos@docker.com
 
+# Install SSH server.
 RUN apt-get update -qq && \
     apt-get install -qqy openssh-server
 RUN mkdir /var/run/sshd
+
+# Install useful tools.
+RUN apt-get update -qq && \
+    apt-get install -qqy \
+        build-essential devscripts ubuntu-standard software-properties-common \
+        vim git subversion mercurial cmake make \
+        dos2unix nkf
+
+# Install C++.
+RUN apt-get update -qq && apt-get install -qqy clang-3.6 clang-format-3.6
+
+# Install scripts (python, php, ruby).
+RUN apt-get update -qq && \
+    apt-get install -qqy python3.4 ruby1.9.3 php5-cli python-pip
+
+# Install C#.
+RUN apt-get update -qq && apt-get install -qqy mono-devel
+
+# Install Haskell.
+RUN apt-get update -qq && apt-get install -qqy haskell-platform
+
+# Install Go.
+RUN apt-get update -qq && apt-get install -qqy golang
+
+# Install Java.
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 \
+        select true | debconf-set-selections && \
+    add-apt-repository -y ppa:webupd8team/java && \
+    apt-get update -qq && apt-get install -qqy oracle-java8-installer
+
+# Install JavaScript.
+# RUN wget -O - https://deb.nodesource.com/setup | bash && \
+#     apt-get install -qqy nodejs npm
+
+# Install AWS command.
+RUN pip install awscli
 
 RUN useradd \
         --home-dir=/home/ninelet \
