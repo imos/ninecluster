@@ -11,20 +11,21 @@ RUN apt-get update -qq && \
     apt-get install -qqy \
         build-essential devscripts ubuntu-standard software-properties-common \
         vim git subversion mercurial cmake make \
-        dos2unix nkf
+        dos2unix nkf curl xz-utils
 
 # Install C++.
 RUN apt-get update -qq && apt-get install -qqy clang-3.6 clang-format-3.6
 
 # Install scripts (python, php, ruby).
 RUN apt-get update -qq && \
-    apt-get install -qqy python3.4 ruby1.9.3 php5-cli python-pip
+    apt-get install -qqy \
+        python3.4 ruby1.9.3 rubygems-integration php5-cli python-pip
 
 # Install C#.
 RUN apt-get update -qq && apt-get install -qqy mono-devel
 
 # Install Haskell.
-RUN apt-get update -qq && apt-get install -qqy haskell-platform
+RUN apt-get update -qq && apt-get install -qqy haskell-platform && cabal update
 
 # Install Go.
 RUN apt-get update -qq && apt-get install -qqy golang
@@ -52,6 +53,11 @@ RUN useradd \
 RUN mkdir -p /home/ninelet/.ssh
 RUN echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrHaL3kdZ2RekCdpkie3fsiv2yVyyWRBOO6Q68Kr+tFStRqtF8q1/UoeteUIOxzwKaAmHoaM9PkItdMBki0BLQDimCZwjjbkosritGDMTJXGd21O72mWaTv+nfq+/ishCdt6gdBYXTejvpPJhq8ZMYhTYJZkWqlGO2CKrWcnHHu1HhnValeqNWS5nh8BULOTMKaixjdzXIkWgm8HyiewvqjZXC3tZlfFDErRpiS7SYfJHd4PujjFCNyiVxZ5yOvEGMXQa1UFxQlfX8H+lAr6qObK50osAdUbvjjbhIhMvZT2higSNNtv/yiaLRnLbbOHomObvqxob5TUVdCkazXX3N imos@docker' > /home/ninelet/.ssh/authorized_keys
 RUN echo 'ninelet ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ninelet
+
+RUN grep '/usr/local/imos/bin:' /etc/environment || \
+    sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
+
+RUN echo "grep /usr/local/imos/bin: /etc/environment || sed 's%PATH=\"%PATH=\"/usr/local/imos/bin:%' /etc/environment" >/etc/profile.d/Z00-imos-bin.sh
 
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D", "-o", "ClientAliveInterval 5", "-o", "ClientAliveCountMax 3"]
