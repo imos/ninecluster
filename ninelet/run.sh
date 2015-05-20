@@ -11,6 +11,7 @@ start_docker() {
 
 cd "$(dirname $0)"
 
+date > dummy
 docker build --tag=local/ninelet .
 
 for port in $(seq 2201 2209); do

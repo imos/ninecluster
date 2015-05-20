@@ -67,7 +67,11 @@ RUN echo 'NINECLUSTER=ninelet' >> /etc/environment
 RUN grep '/usr/local/imos/bin:' /etc/environment || \
     sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
 RUN mkdir -p /usr/local/imos/bin
-RUN git clone 'https://github.com/imos/bin' /usr/local/imos/bin
+RUN git clone --depth 1 'https://github.com/imos/bin' /usr/local/imos/bin
+
+# Clear cache if necessary.
+ADD ./dummy /var/tmp/dummy
+RUN cd /usr/local/imos/bin && git pull
 
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D", "-o", "ClientAliveInterval 5", "-o", "ClientAliveCountMax 3"]
