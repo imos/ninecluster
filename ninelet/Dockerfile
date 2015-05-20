@@ -58,7 +58,7 @@ RUN echo 'ninelet ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ninelet
 # Set language settings.
 RUN echo 'LANGUAGE=en_US.UTF8' >> /etc/environment
 RUN echo 'LANG=en_US.UTF8' >> /etc/environment
-RUN echo 'LC_ALL=en_US.UTF8' >> /etc/environment
+RUN echo 'LC_ALL=C.UTF-8' >> /etc/environment
 
 # Set a ninecluster role.
 RUN echo 'NINECLUSTER=ninelet' >> /etc/environment
