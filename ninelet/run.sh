@@ -6,7 +6,7 @@ start_docker() {
   while :; do
     docker run \
         --rm \
-        --privilege \
+        --privileged \
         --publish="${port}:22" \
         --volume=/alloc:/alloc \
         --volume=/var/tmp:/var/tmp \
