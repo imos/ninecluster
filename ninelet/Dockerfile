@@ -43,6 +43,10 @@ RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 \
 # Install AWS command.
 RUN pip install awscli
 
+# Install utilities for Bazel.
+RUN apt-get update -qq && \
+    apt-get install -qqy libarchive-dev pkg-config zip g++ zlib1g-dev
+
 # Add ninelet user.
 RUN useradd \
         --home-dir=/home/ninelet \
@@ -64,16 +68,16 @@ RUN echo 'LC_ALL=C.UTF-8' >> /etc/environment
 RUN echo 'NINECLUSTER=ninelet' >> /etc/environment
 
 # Set up imos/bin.
-RUN grep '/usr/local/imos/bin:' /etc/environment || \
-    sed -i 's%PATH="%PATH="/usr/local/imos/bin:%' /etc/environment
-ENV PATH /usr/local/imos/bin:$PATH
+RUN grep '/usr/imos/bin:' /etc/environment || \
+    sed -i 's%PATH="%PATH="/usr/imos/bin:%' /etc/environment
+ENV PATH /usr/imos/bin:$PATH
 RUN echo "Defaults secure_path = \"$PATH\"" >/etc/sudoers.d/00-secure_path
-RUN mkdir -p /usr/local/imos/bin
-RUN git clone --depth 1 'https://github.com/imos/bin' /usr/local/imos/bin
+RUN mkdir -p /usr/imos/bin
+RUN git clone --depth 1 'https://github.com/imos/bin' /usr/imos/bin
 
 # Clear cache if necessary.
 ADD ./dummy /var/tmp/dummy
-RUN cd /usr/local/imos/bin && git pull
+RUN cd /usr/imos/bin && git pull
 
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D", "-o", "ClientAliveInterval 5", "-o", "ClientAliveCountMax 3"]

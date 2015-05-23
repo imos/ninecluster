@@ -10,6 +10,7 @@ start_docker() {
         --publish="${port}:22" \
         --volume=/alloc:/alloc \
         --volume=/var/tmp:/var/tmp \
+        --volume=/ninemaster/config:/usr/imos/config \
         local/ninelet "$@"
     sleep 1
   done
@@ -19,6 +20,8 @@ cd "$(dirname $0)"
 
 date > dummy
 docker build --tag=local/ninelet .
+
+mkdir -p /ninemaster/config
 
 for port in $(seq 2201 2209); do
   start_docker "${port}" &
