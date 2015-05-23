@@ -4,7 +4,13 @@ start_docker() {
   local port="${1}"; shift
 
   while :; do
-    docker run --rm --publish="${port}:22" --volume=/alloc:/alloc local/ninelet "$@"
+    docker run \
+        --rm \
+        --privilege \
+        --publish="${port}:22" \
+        --volume=/alloc:/alloc \
+        --volume=/var/tmp:/var/tmp \
+        local/ninelet "$@"
     sleep 1
   done
 }
