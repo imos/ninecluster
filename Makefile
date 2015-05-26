@@ -37,7 +37,7 @@ mount: check
 	if ! mountpoint -q /ninecluster/ninemaster; then \
 	  set -e -x; \
 	  mkdir -p /ninecluster/ninemaster; \
-	  if [ -f /ninecluster/ninemaster.dmg ]; then \
+	  if [ ! -f /ninecluster/ninemaster.dmg ]; then \
 	    dd if=/dev/zero of=/ninecluster/ninemaster.dmg count=1 bs=1M seek=10000; \
 	    mkfs.ext4 /ninecluster/ninemaster.dmg; \
 	  fi; \
