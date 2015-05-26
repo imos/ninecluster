@@ -1,18 +1,21 @@
 SERVICE := ninemaster
+DISK ?= 50G
+ALLOC_DISK ?= 10G
 
 start: check
+	make mount
 	if ! docker top $(SERVICE) >/dev/null 2>/dev/null; then \
 		set -e -x; \
-		mkdir -p /alloc; \
-		mkdir -p /ninemaster; \
+		mkdir -p /ninecluster/alloc; \
+		mkdir -p /ninecluster/ninemaster; \
 		docker build --tag=local/$(SERVICE) .; \
 		docker rm --force $(SERVICE) 2>/dev/null || true; \
 		docker run \
 		    --privileged \
 		    --name=$(SERVICE) \
 		    --hostname=$(SERVICE) \
-		    --volume=/alloc:/alloc \
-		    --volume=/ninemaster:/ninemaster \
+		    --volume=/ninecluster/alloc:/alloc \
+		    --volume=/ninecluster/ninemaster:/ninemaster \
 		    --publish=2200:22 \
 		    --publish=2201-2219:2201-2219 \
 		    local/$(SERVICE); \
@@ -22,12 +25,38 @@ start: check
 stop: check
 	-docker kill $(SERVICE) 2>/dev/null
 	-docker rm --force $(SERVICE) 2>/dev/null
+	-make unmount
 .PHONY: stop
 
 restart: check
 	make stop
 	make start
 .PHONY: restart
+
+mount: check
+	if ! mountpoint -q /ninecluster/ninemaster; then \
+	  set -e -x; \
+	  mkdir -p /ninecluster/ninemaster; \
+	  e2fsck -y -f /ninecluster/ninemaster.dmg; \
+	  resize2fs /ninecluster/ninemaster.dmg $(DISK); \
+	  mount -t auto -o loop /ninecluster/ninemaster.dmg /ninecluster/ninemaster; \
+	fi
+.PHONY: mount
+
+unmount: check
+	-fuser --kill /ninecluster/ninemaster 2>/dev/null
+	-umount -f /ninecluster/ninemaster 2>/dev/null
+.PHONY: unmount
+
+defrag: check
+	-e4defrag -c /ninecluster/ninemaster.dmg
+	-e2fsck -y -f /ninecluster/ninemaster.dmg
+	-resize2fs -M /ninecluster/ninemaster.dmg
+.PHONY: defrag
+
+backup: check
+	xz --stdout --compress /ninecluster/ninemaster.dmg > /ninecluster/ninemaster.dmg.xz
+.PHONY: backup
 
 install:
 	test "$$(whoami)" = 'root'
