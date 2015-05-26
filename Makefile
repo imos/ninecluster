@@ -37,6 +37,10 @@ mount: check
 	if ! mountpoint -q /ninecluster/ninemaster; then \
 	  set -e -x; \
 	  mkdir -p /ninecluster/ninemaster; \
+	  if [ -f /ninecluster/ninemaster.dmg ]; then \
+	    dd if=/dev/zero of=/ninecluster/ninemaster.dmg count=1 bs=1M seek=10000; \
+	    mkfs.ext4 /ninecluster/ninemaster.dmg; \
+	  fi; \
 	  e2fsck -y -f /ninecluster/ninemaster.dmg; \
 	  resize2fs /ninecluster/ninemaster.dmg $(DISK); \
 	  mount -t auto -o loop /ninecluster/ninemaster.dmg /ninecluster/ninemaster; \
