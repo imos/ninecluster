@@ -9,7 +9,7 @@ start_docker() {
         --privileged \
         --publish="${port}:22" \
         --volume=/alloc:/alloc \
-        --volume=/var/tmp:/var/tmp \
+        --volume=/ninemaster/tmp:/var/tmp \
         --volume=/ninemaster/config:/usr/imos/config \
         local/ninelet "$@"
     sleep 1
@@ -21,6 +21,8 @@ cd "$(dirname $0)"
 date > dummy
 docker build --tag=local/ninelet .
 
+mkdir -p /ninemaster/tmp
+chmod ugo=rwxrwxrwt /ninemaster/tmp
 mkdir -p /ninemaster/config
 
 for port in $(seq 2201 2209); do
