@@ -10,8 +10,9 @@ RUN mkdir /var/run/sshd
 RUN apt-get update -qq && \
     apt-get install -qqy \
         build-essential devscripts ubuntu-standard software-properties-common \
+        screen lxc traceroute gdb \
         vim git subversion mercurial cmake make \
-        dos2unix nkf curl xz-utils
+        dos2unix nkf curl xz-utils graphviz imagemagick
 
 # Install C++.
 RUN apt-get update -qq && apt-get install -qqy clang-3.6 clang-format-3.6
